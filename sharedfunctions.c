@@ -12,7 +12,7 @@ int main()
     int shmid;
     
     /*  create the segment: */
-    if ((shmid = shmget(key, SHM_SIZE, IPC_CREAT)) == -1) {
+    if ((shmid = shmget(key, SHM_SIZE, IPC_CREAT | IPC_EXCL)) == -1) {
         perror("shmget");
         exit(1);
     }
@@ -23,7 +23,12 @@ int main()
         perror("shmat");
         exit(1);
     }
+    
+    /* Detach the shared memory segment */
+    shmdt(&data);
+    
+    /* Deallocate the shared memory segment.  */ 
+  shmctl (shmid, IPC_RMID, 0); 
 
     return 0;
 }
-
