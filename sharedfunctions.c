@@ -1,13 +1,34 @@
-#include <stdio.h>
-#include <stdlib.h>
-#include <sys/ipc.h>
-#include <sys/shm.h>
+/**
+ * @file sharedfunctions.c
+ * sharedmemory
+ * Beispiel 3
+ *
+ * @author Karin Kalman <karin.kalman@technikum-wien.at>
+ * @author Michael Mueller <michael.mueller@technikum-wien.at>
+ * @author Gerhard Sabeditsch <gerhard.sabeditsch@technikum-wien.at>
+ * @date 2016/04/17
+ *
+ * @version $Revision: 1 $
+ *
+ *
+ * URL: $HeadURL$
+ *
+ * Last Modified: $Author: Gerhard $
+ */
 
+/**
+ * -------------------------------------------------------------- includes --
+ */
+#include "sharedmemory.h"
+
+//DEBUG:
 #define SHM_SIZE 4  
-
-int main()
+/**
+ * -------------------------------------------------------------- global static variables --
+ */
+int testfunct()
 {
-    int key = 1001;
+	int key = 1001;
     char *data;
     int shmid;
     
@@ -28,7 +49,12 @@ int main()
     shmdt(&data);
     
     /* Deallocate the shared memory segment.  */ 
-  shmctl (shmid, IPC_RMID, 0); 
+	shmctl (shmid, IPC_RMID, 0); 
 
-    return 0;
+
+	return 0;
 }
+
+/**
+ * -------------------------------------------------------------- -function --
+ */
