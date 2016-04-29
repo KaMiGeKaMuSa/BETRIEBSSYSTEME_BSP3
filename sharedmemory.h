@@ -30,6 +30,7 @@
 #include <string.h>
 #include <sys/ipc.h>
 #include <sys/shm.h>
+#include <unistd.h>
 
 /*
  * --------------------------------------------------------------- defines --
@@ -40,7 +41,8 @@
 /*
  * --------------------------------------------------- function prototypes --
  */
-
+int parseParameter(int argc, char **argv);
+int testfunct();
 
 
 #endif /* _SHAREDMEMORY_H_ */
