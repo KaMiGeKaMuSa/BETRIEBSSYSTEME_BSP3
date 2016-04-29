@@ -56,5 +56,26 @@ int testfunct()
 }
 
 /**
- * -------------------------------------------------------------- -function --
+ * -------------------------------------------------------------- getopt - function --
  */
+int parseParameter(int argc, char **argv){
+    int ret = 0, fail = 0, c;
+	
+    while ((c = getopt(argc, argv, "m:")) != EOF) {
+        switch (c) {
+        case 'm':
+            ret = atoi(optarg);
+            break;
+        default:
+            fail=1;
+            break;
+        }
+    }
+	
+    if (fail) {
+        fprintf(stderr,"usage: %s [-m size] ...\n", argv[0]);
+        return(fail);
+    }
+	
+	return ret;
+}
