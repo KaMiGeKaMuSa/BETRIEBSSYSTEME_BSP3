@@ -30,7 +30,9 @@
 #include <string.h>
 #include <sys/ipc.h>
 #include <sys/shm.h>
+#include <sys/types.h>
 #include <unistd.h>
+
 
 /*
  * --------------------------------------------------------------- defines --
@@ -41,8 +43,9 @@
 /*
  * --------------------------------------------------- function prototypes --
  */
+char * createSegment(int shm_size);
+int closeSegment(char *segment, int shm_size);
 int parseParameter(int argc, char **argv);
-int testfunct();
 
 
 #endif /* _SHAREDMEMORY_H_ */
