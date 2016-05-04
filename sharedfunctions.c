@@ -21,47 +21,76 @@
  */
 #include "sharedmemory.h"
 
-//DEBUG:
-#define SHM_SIZE 4  
 /**
  * -------------------------------------------------------------- global static variables --
  */
-int testfunct()
-{
-	int key = 1001;
-    char *data;
+ 
+/**
+ * -------------------------------------------------------------- create segment - function --
+*/
+char * createSegment(int shm_size) {
+	int key = getuid()*1000;
+    char *segment;
     int shmid;
     
-    /*  create the segment: */
-    if ((shmid = shmget(key, SHM_SIZE, IPC_CREAT | IPC_EXCL)) == -1) {
-        perror("shmget");
-        exit(1);
+    /*  check if segment exists: */
+	if ((shmid = shmget(key, shm_size, 0666)) == -1) {
+		/*  ENOENT = No segment exists for the given key, and IPC_CREAT was not specified */
+		if(errno == ENOENT) {
+			/*  create segment: */
+			if ((shmid = shmget(key, shm_size, IPC_CREAT | IPC_EXCL)) == -1) {
+				perror("shmget");
+				return -1;
+			}
+		}
     }
 
     /* attach to the segment to get a pointer to it: */
-    data = shmat(shmid, (void *)0, 0);
-    if (data == (char *)(-1)) {
+    segment = shmat(shmid, (void *)0, 0);
+    if (segment == (char *)(-1)) {
         perror("shmat");
-        exit(1);
+        return -1;
+    }
+	
+	return segment;
+}
+    
+/**
+ * -------------------------------------------------------------- close segment - function --
+ */
+int closeSegment(char *segment, int shm_size) {
+	int key = getuid()*1000;
+	int returnvalue;
+	
+	/*  detach shared memory segment: */
+    if ((returnvalue = shmdt(segment)) == -1) {
+        perror("shmdt");
+        return returnvalue;
     }
     
-    /* Detach the shared memory segment */
-    shmdt(&data);
-    
-    /* Deallocate the shared memory segment.  */ 
-	shmctl (shmid, IPC_RMID, 0); 
+	/*  check if segment exists: */
+	if ((shmid = shmget(key, shm_size, 0666)) == -1) {
+		if(errno != ENOENT) {
+			perror("shmget");
+			return shmid;
+		}
+	}
+	/*  if shared memory segment exists mark as removable */
+	if ((returnvalue = shmctl (shmid, IPC_RMID, 0)) == -1) {
+		perror("shmctl: shmctl failed");
+		return returnvalue;
+	} 
 
-
-	return 0;
+	return returnvalue;
 }
 
 /**
  * -------------------------------------------------------------- getopt - function --
  */
-int parseParameter(int argc, char **argv){
-    int ret = 0, fail = 0, c;
+int parseParameter(int argc, char **argv) {
+	int ret = 0, fail = 0, c;
 	
-    while ((c = getopt(argc, argv, "m:")) != EOF) {
+	while ((c = getopt(argc, argv, "m:")) != EOF) {
         switch (c) {
         case 'm':
             ret = atoi(optarg);
@@ -72,7 +101,7 @@ int parseParameter(int argc, char **argv){
         }
     }
 	
-    if (fail) {
+	if (fail) {
         fprintf(stderr,"usage: %s [-m size] ...\n", argv[0]);
         return(fail);
     }
