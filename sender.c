@@ -29,11 +29,18 @@
  * ------------------------------------------------------------- main --
  */
 int main(int argc, const char * argv[]) {
+	char *segment = NULL;
+	int shm_size = 0;
+	
+	/*  get size as parameter */
+	shm_size = parseParameter(argc, argv);
 
-	// 1) Methode um Shared Memory anzulegen aufrufen
+	/*  create segment or when already created return segment */
+	segment = createSegment(shm_size);
+	
 	// 2) Methode um Semaphoren anzulegen aufrufen
 	// 3) while (!= EOF) auf Shared Memory schreiben
 	//		aufpassen das Schreibindex hinter Leseindex bleibt
-
+	
 	return 0;
 }
