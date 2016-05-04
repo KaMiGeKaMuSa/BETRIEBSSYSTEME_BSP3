@@ -40,7 +40,7 @@ char * createSegment(int shm_size) {
 			/*  create segment: */
 			if ((shmid = shmget(key, shm_size, IPC_CREAT | IPC_EXCL)) == -1) {
 				perror("shmget");
-				return -1;
+				return NULL;
 			}
 		}
     }
@@ -49,7 +49,7 @@ char * createSegment(int shm_size) {
     segment = shmat(shmid, (void *)0, 0);
     if (segment == (char *)(-1)) {
         perror("shmat");
-        return -1;
+        return NULL;
     }
 	
 	return segment;
@@ -75,6 +75,7 @@ int closeSegment(char *segment, int shm_size) {
 			return shmid;
 		}
 	}
+	
 	/*  if shared memory segment exists mark as removable */
 	if ((returnvalue = shmctl (shmid, IPC_RMID, 0)) == -1) {
 		perror("shmctl: shmctl failed");
@@ -103,7 +104,7 @@ int parseParameter(int argc, char **argv) {
 	
 	if (fail) {
         fprintf(stderr,"usage: %s [-m size] ...\n", argv[0]);
-        return(fail);
+        return -1;
     }
 	
 	return ret;
