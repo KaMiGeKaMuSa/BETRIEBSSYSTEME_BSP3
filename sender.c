@@ -29,23 +29,43 @@
  * ------------------------------------------------------------- main --
  */
 int main(int argc, char * argv[]) {
-	char *segment = NULL;
+	data_collect shm_sem;
 	int shm_size = 0;
 	
 	/*  get size as parameter */
     shm_size = parseParameter(argc, argv);
     
-	/*  create segment or when already created return segment */
-	segment = createSegment(shm_size);
-	
-	// 2) Methode um Semaphoren anzulegen aufrufen
-    
-    
-    
+	/*  create segment/semaphore and return collection or when already created only return collection */
+	shm_sem = createSegment(shm_size);
     
     
 	// 3) while (!= EOF) auf Shared Memory schreiben
 	//		aufpassen das Schreibindex hinter Leseindex bleibt
+	do {
+		if (P(shm_sem.sem_w) != 0) {
+			if (errno == EINTR) {
+				/* syscall interrupted by signal, try again */
+				continue;
+			}
+			perror("P(shm_sem.sem_w)");
+			closeSegment(shm_sem);
+			break;
+		}
+	  
+		input = fgetc(stdin);
+		shm_sem.segment[pos] = input;
+		pos++;
+		
+		if (pos == shm_sem.shm_size) {
+			pos = 0;
+		}
+		
+		if (V(shm_sem.sem_r) != 0) {
+			perror("V(shm_sem.sem_r)");
+			closeSegment(shm_sem);
+			break;
+		}
+	} while (input != EOF);
 	
 	return 0;
 }
