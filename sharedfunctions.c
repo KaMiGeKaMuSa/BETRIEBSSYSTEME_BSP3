@@ -32,16 +32,17 @@
 /*
  *
  */
-char * createSegment(int shm_size) {
-    char *segment;
-    int shmid;
-    
+data_collect createSegment(int shm_size) {
+    data_collect ret_object;
+	
+	ret_object->shm_size = shm_size;
+	
     /*  check if segment exists: 0666 == look if exist*/
-	if ((shmid = shmget(D_KEY, shm_size, 0666)) == -1) {
+	if ((ret_object->shmid = shmget(SHM_KEY, ret_object->shm_size, 0666)) == -1) {
 		/*  ENOENT = No segment exists for the given key, and IPC_CREAT was not specified */
 		if(errno == ENOENT) {
 			/*  create segment: */
-			if ((shmid = shmget(D_KEY, shm_size, IPC_CREAT | IPC_EXCL)) == -1) {
+			if ((ret_object->shmid = shmget(SHM_KEY, ret_object->shm_size, IPC_CREAT | IPC_EXCL)) == -1) {
 				perror("shmget");
 				return NULL;
 			}
@@ -49,30 +50,47 @@ char * createSegment(int shm_size) {
     }
 
     /* attach to the segment to get a pointer to it: */
-    segment = shmat(shmid, (void *)0, 0);
-    if (segment == (char *)(-1)) {
+    ret_object->segment = shmat(ret_object->shmid, (void *)0, 0);
+    if (ret_object->segment == (char *)(-1)) {
         perror("shmat");
         return NULL;
     }
 	
-	return segment;
+	/* check if read-semaphore exists: */
+	if ((ret_object->sem_r = semgrab(SEM_R_KEY)) == -1) {
+		/* read-semaphore don't exist, so initialize: */
+		if ((ret_object->sem_r = seminit(SEM_R_KEY, 0600, 0)) == -1) {
+			perror("seminit(sem_r)");
+			return NULL;
+		}
+	}
+	/* check if write-semaphore exists: */
+	if ((ret_object->sem_w = semgrab(SEM_W_KEY)) == -1) {
+		/* write-semaphore don't exist, so initialize: */
+		if ((ret_object->sem_w = seminit(SEM_W_KEY, 0600, ret_object->shm_size)) == -1) {
+			perror("seminit(sem_w)");
+			return NULL;
+		}
+	}
+	
+	
+	return ret_object->segment;
 }
     
 /**
  * -------------------------------------------------------------- close segment - function --
  */
-int closeSegment(char *segment, int shm_size) {
+int closeSegment(data_collect shm_sem) {
 	int returnvalue;
-    int shmid;
     
 	/*  detach shared memory segment: */
-    if ((returnvalue = shmdt(segment)) == -1) {
+    if ((returnvalue = shmdt(shm_sem->segment)) == -1) {
         perror("shmdt");
         return returnvalue;
     }
     
 	/*  check if segment exists: */
-	if ((shmid = shmget(D_KEY, shm_size, 0666)) == -1) {
+	if ((shm_sem->shmid = shmget(SHM_KEY, shm_sem->shm_size, 0666)) == -1) {
 		if(errno != ENOENT) {
 			perror("shmget");
 			return shmid;
@@ -80,7 +98,7 @@ int closeSegment(char *segment, int shm_size) {
 	}
 	
 	/*  if shared memory segment exists mark as removable */
-	if ((returnvalue = shmctl (shmid, IPC_RMID, 0)) == -1) {
+	if ((returnvalue = shmctl(shm_sem->shmid, IPC_RMID, 0)) == -1) {
 		perror("shmctl: shmctl failed");
 		return returnvalue;
 	} 
