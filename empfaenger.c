@@ -29,16 +29,18 @@
  * ------------------------------------------------------------- main --
  */
 int main(int argc, const char * argv[]) {
-	char *segment = NULL;
+	data_collect shm_sem;
 	int shm_size = 0;
+	int sendData;
+	int pos;
 	
 	/*  get size as parameter */
 	shm_size = parseParameter(argc, argv);
 	
-	/*  create segment or when already created return segment */
-	segment = createSegment(shm_size);
+	/*  create segment/semaphore and return collection or when already created only return collection */
+	shm_sem = createSegment(shm_size);
 	
-	// 2) Methode um Semaphoren anzulegen aufrufen
+	
 	// 3) while (!= EOF) von Shared Memory lesen
 	//		aufpassen das Leseindex hinter Schreibindex bleibt
 
