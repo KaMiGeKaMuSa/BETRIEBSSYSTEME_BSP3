@@ -28,17 +28,20 @@
 /**
  * -------------------------------------------------------------- create segment - function --
 */
+
+/*
+ *
+ */
 char * createSegment(int shm_size) {
-	int key = getuid()*1000;
     char *segment;
     int shmid;
     
-    /*  check if segment exists: */
-	if ((shmid = shmget(key, shm_size, 0666)) == -1) {
+    /*  check if segment exists: 0666 == look if exist*/
+	if ((shmid = shmget(D_KEY, shm_size, 0666)) == -1) {
 		/*  ENOENT = No segment exists for the given key, and IPC_CREAT was not specified */
 		if(errno == ENOENT) {
 			/*  create segment: */
-			if ((shmid = shmget(key, shm_size, IPC_CREAT | IPC_EXCL)) == -1) {
+			if ((shmid = shmget(D_KEY, shm_size, IPC_CREAT | IPC_EXCL)) == -1) {
 				perror("shmget");
 				return NULL;
 			}
@@ -59,9 +62,9 @@ char * createSegment(int shm_size) {
  * -------------------------------------------------------------- close segment - function --
  */
 int closeSegment(char *segment, int shm_size) {
-	int key = getuid()*1000;
 	int returnvalue;
-	
+    int shmid;
+    
 	/*  detach shared memory segment: */
     if ((returnvalue = shmdt(segment)) == -1) {
         perror("shmdt");
@@ -69,7 +72,7 @@ int closeSegment(char *segment, int shm_size) {
     }
     
 	/*  check if segment exists: */
-	if ((shmid = shmget(key, shm_size, 0666)) == -1) {
+	if ((shmid = shmget(D_KEY, shm_size, 0666)) == -1) {
 		if(errno != ENOENT) {
 			perror("shmget");
 			return shmid;
@@ -88,7 +91,7 @@ int closeSegment(char *segment, int shm_size) {
 /**
  * -------------------------------------------------------------- getopt - function --
  */
-int parseParameter(int argc, char **argv) {
+int parseParameter(int argc, char *argv[]) {
 	int ret = 0, fail = 0, c;
 	
 	while ((c = getopt(argc, argv, "m:")) != EOF) {
