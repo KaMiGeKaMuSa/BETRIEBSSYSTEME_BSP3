@@ -39,8 +39,17 @@
  */
 
 
-#define D_KEY getuid()*1000
+#define SHM_KEY getuid() * 1000 + 0
+#define SEM_R_KEY getuid() * 1000 + 1
+#define SEM_W_KEY getuid() * 1000 + 2
 
+typedef struct {
+	char *segment;
+    int shmid;
+    int sem_r;
+	int sem_w;
+	int shm_size;
+} data_collect;
 
 /*
  * --------------------------------------------------- function prototypes --
