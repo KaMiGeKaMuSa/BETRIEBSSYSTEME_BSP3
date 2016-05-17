@@ -55,7 +55,7 @@ typedef struct {
  * --------------------------------------------------- function prototypes --
  */
 char * createSegment(int shm_size);
-int closeSegment(char *segment, int shm_size);
+int closeSegment(data_collect shm_sem);
 int parseParameter(int argc, char **argv);
 
 
