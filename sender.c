@@ -31,6 +31,7 @@
 int main(int argc, char * argv[]) {
 	data_collect shm_sem;
 	int shm_size = 0;
+	char input;
 	
 	/*  get size as parameter */
     shm_size = parseParameter(argc, argv);
