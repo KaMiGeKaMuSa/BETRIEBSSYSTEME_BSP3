@@ -32,7 +32,8 @@ int main(int argc, const char * argv[]) {
 	data_collect shm_sem;
 	int shm_size = 0;
 	int sendData;
-	int pos;
+	int pos = 0;
+	char output;
 	
 	/*  get size as parameter */
 	shm_size = parseParameter(argc, argv);
@@ -43,6 +44,38 @@ int main(int argc, const char * argv[]) {
 	
 	// 3) while (!= EOF) von Shared Memory lesen
 	//		aufpassen das Leseindex hinter Schreibindex bleibt
+	do {
+		/* Decrement read semaphore, because we read from a written segment, if >0 all ok else block application */
+		if (P(shm_sem.sem_r) != 0) {
+			if (errno == EINTR) {
+				/* syscall interrupted by signal, try again */
+				continue;
+			}
+			perror("P(shm_sem.sem_r)");
+			closeSegment(shm_sem);
+			break;
+		}
+	  
+		/* get character from shared memory and write to stdout */
+		output = shm_sem.segment[pos];
+		pos++;
+		
+		if (output != EOF) {
+			printf("%c", output);
+		}
+		
+		/* if pos == shared memory size, start at 0 again */
+		if (pos == shm_sem.shm_size) {
+			pos = 0;
+		}
+		
+		/* increment write semaphore to tell sender that segment is read and can be overwritten */
+		if (V(shm_sem.sem_w) != 0) {
+			perror("V(shm_sem.sem_w)");
+			closeSegment(shm_sem);
+			break;
+		}
+	} while (output != EOF);
 
 	return 0;
 }
