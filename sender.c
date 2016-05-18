@@ -30,7 +30,7 @@
  */
 int main(int argc, char * argv[]) {
 	data_collect shm_sem;
-	int shm_size = 0;
+	int shm_size = 0, pos;
 	char input;
 	
 	/*  get size as parameter */
