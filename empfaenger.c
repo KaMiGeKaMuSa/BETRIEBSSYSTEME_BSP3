@@ -76,6 +76,8 @@ int main(int argc, const char * argv[]) {
 			break;
 		}
 	} while (output != EOF);
+	
+	closeSegment(shm_sem);
 
 	return 0;
 }
