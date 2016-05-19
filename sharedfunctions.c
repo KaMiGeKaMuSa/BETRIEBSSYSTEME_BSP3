@@ -81,29 +81,45 @@ data_collect createSegment(int shm_size) {
  * -------------------------------------------------------------- close segment - function --
  */
 int closeSegment(data_collect shm_sem) {
-	int returnvalue;
+    int returnvalue;
     
-	/*  detach shared memory segment: */
+    /* clean up semaphores */
+    if ((returnvalue = semrm(shm_sem->sem_w)) == -1) {
+	perror("semrm(shm_sem->sem_w)");
+	return returnvalue;
+    }
+    if ((returnvalue = semrm(shm_sem->sem_r)) == -1) {
+	perror("semrm(shm_sem->sem_r)");
+	return returnvalue;
+    }
+	
+    /*  detach shared memory segment: */
     if ((returnvalue = shmdt(shm_sem->segment)) == -1) {
         perror("shmdt");
         return returnvalue;
     }
     
-	/*  check if segment exists: */
-	if ((shm_sem->shmid = shmget(SHM_KEY, shm_sem->shm_size, 0666)) == -1) {
-		if(errno != ENOENT) {
-			perror("shmget");
-			return shmid;
-		}
+    /*  detach shared memory segment: */
+    if ((returnvalue = shmdt(shm_sem->segment)) == -1) {
+        perror("shmdt");
+        return returnvalue;
+    }
+    
+    /*  check if segment exists: */
+    if ((shm_sem->shmid = shmget(SHM_KEY, shm_sem->shm_size, 0666)) == -1) {
+	if(errno != ENOENT) {
+		perror("shmget");
+		return shmid;
 	}
+    }
 	
-	/*  if shared memory segment exists mark as removable */
-	if ((returnvalue = shmctl(shm_sem->shmid, IPC_RMID, 0)) == -1) {
-		perror("shmctl: shmctl failed");
-		return returnvalue;
-	} 
-
+    /*  if shared memory segment exists mark as removable */
+    if ((returnvalue = shmctl(shm_sem->shmid, IPC_RMID, 0)) == -1) {
+	perror("shmctl: shmctl failed");
 	return returnvalue;
+    } 
+
+    return returnvalue;
 }
 
 /**
