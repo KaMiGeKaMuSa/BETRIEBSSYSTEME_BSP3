@@ -35,46 +35,50 @@
 data_collect createSegment(int shm_size) {
     data_collect ret_object;
 	
-	ret_object->shm_size = shm_size;
+	ret_object.shm_size = shm_size;
 	
     /*  check if segment exists: 0666 == look if exist*/
-	if ((ret_object->shmid = shmget(SHM_KEY, ret_object->shm_size, 0666)) == -1) {
+	if ((ret_object.shmid = shmget(SHM_KEY, ret_object.shm_size, 0666)) == -1) {
 		/*  ENOENT = No segment exists for the given key, and IPC_CREAT was not specified */
 		if(errno == ENOENT) {
 			/*  create segment: */
-			if ((ret_object->shmid = shmget(SHM_KEY, ret_object->shm_size, IPC_CREAT | IPC_EXCL)) == -1) {
+			if ((ret_object.shmid = shmget(SHM_KEY, ret_object.shm_size, IPC_CREAT | IPC_EXCL)) == -1) {
 				perror("shmget");
-				return NULL;
+				ret_object.segment = NULL;
+				return ret_object;
 			}
 		}
     }
 
     /* attach to the segment to get a pointer to it: */
-    ret_object->segment = shmat(ret_object->shmid, (void *)0, 0);
-    if (ret_object->segment == (char *)(-1)) {
+    ret_object.segment = shmat(ret_object.shmid, (void *)0, 0);
+    if (ret_object.segment == (char *)(-1)) {
         perror("shmat");
-        return NULL;
+		ret_object.segment = NULL;
+        return ret_object;
     }
 	
 	/* check if read-semaphore exists: */
-	if ((ret_object->sem_r = semgrab(SEM_R_KEY)) == -1) {
+	if ((ret_object.sem_r = semgrab(SEM_R_KEY)) == -1) {
 		/* read-semaphore don't exist, so initialize: */
-		if ((ret_object->sem_r = seminit(SEM_R_KEY, 0600, 0)) == -1) {
+		if ((ret_object.sem_r = seminit(SEM_R_KEY, 0600, 0)) == -1) {
 			perror("seminit(sem_r)");
-			return NULL;
+			ret_object.segment = NULL;
+			return ret_object;
 		}
 	}
 	/* check if write-semaphore exists: */
-	if ((ret_object->sem_w = semgrab(SEM_W_KEY)) == -1) {
+	if ((ret_object.sem_w = semgrab(SEM_W_KEY)) == -1) {
 		/* write-semaphore don't exist, so initialize: */
-		if ((ret_object->sem_w = seminit(SEM_W_KEY, 0600, ret_object->shm_size)) == -1) {
+		if ((ret_object.sem_w = seminit(SEM_W_KEY, 0600, ret_object.shm_size)) == -1) {
 			perror("seminit(sem_w)");
-			return NULL;
+			ret_object.segment = NULL;
+			return ret_object;
 		}
 	}
 	
 	
-	return ret_object->segment;
+	return ret_object;
 }
     
 /**
@@ -84,37 +88,37 @@ int closeSegment(data_collect shm_sem) {
     int returnvalue;
     
     /* clean up semaphores */
-    if ((returnvalue = semrm(shm_sem->sem_w)) == -1) {
-	perror("semrm(shm_sem->sem_w)");
+    if ((returnvalue = semrm(shm_sem.sem_w)) == -1) {
+	perror("semrm(shm_sem.sem_w)");
 	return returnvalue;
     }
-    if ((returnvalue = semrm(shm_sem->sem_r)) == -1) {
-	perror("semrm(shm_sem->sem_r)");
+    if ((returnvalue = semrm(shm_sem.sem_r)) == -1) {
+	perror("semrm(shm_sem.sem_r)");
 	return returnvalue;
     }
 	
     /*  detach shared memory segment: */
-    if ((returnvalue = shmdt(shm_sem->segment)) == -1) {
+    if ((returnvalue = shmdt(shm_sem.segment)) == -1) {
         perror("shmdt");
         return returnvalue;
     }
     
     /*  detach shared memory segment: */
-    if ((returnvalue = shmdt(shm_sem->segment)) == -1) {
+    if ((returnvalue = shmdt(shm_sem.segment)) == -1) {
         perror("shmdt");
         return returnvalue;
     }
     
     /*  check if segment exists: */
-    if ((shm_sem->shmid = shmget(SHM_KEY, shm_sem->shm_size, 0666)) == -1) {
+    if ((shm_sem.shmid = shmget(SHM_KEY, shm_sem.shm_size, 0666)) == -1) {
 	if(errno != ENOENT) {
 		perror("shmget");
-		return shmid;
+		return shm_sem.shmid;
 	}
     }
 	
     /*  if shared memory segment exists mark as removable */
-    if ((returnvalue = shmctl(shm_sem->shmid, IPC_RMID, 0)) == -1) {
+    if ((returnvalue = shmctl(shm_sem.shmid, IPC_RMID, 0)) == -1) {
 	perror("shmctl: shmctl failed");
 	return returnvalue;
     } 
