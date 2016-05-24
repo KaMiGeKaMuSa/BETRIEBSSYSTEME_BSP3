@@ -36,24 +36,23 @@ int main(int argc, const char * argv[]) {
 	char output;
 	
 	/*  get size as parameter */
-	shm_size = parseParameter(argc, argv);
+	if ((shm_size = parseParameter(argc, argv)) == -1) {
+		return -1;
+	}
 	
 	/*  create segment/semaphore and return collection or when already created only return collection */
-	shm_sem = createSegment(shm_size);
+	shm_sem = createSegment(shm_size, READ_MODE);
+	if (shm_sem.segment == NULL) return -1;
 	
-	
-	// 3) while (!= EOF) von Shared Memory lesen
-	//		aufpassen das Leseindex hinter Schreibindex bleibt
 	do {
 		/* Decrement read semaphore, because we read from a written segment, if >0 all ok else block application */
-		if (P(shm_sem.sem_r) != 0) {
-			if (errno == EINTR) {
-				/* syscall interrupted by signal, try again */
-				continue;
+		while (P(shm_sem.sem_r) == -1) {
+			if (errno != EINTR) {
+				fprintf(stderr, "%s: %s\n", "P(shm_sem.sem_r)", strerror(errno));
+				closeSegment(shm_sem);
+				return -1;
 			}
-			perror("P(shm_sem.sem_r)");
-			closeSegment(shm_sem);
-			break;
+			errno = 0;
 		}
 	  
 		/* get character from shared memory and write to stdout */
@@ -61,23 +60,27 @@ int main(int argc, const char * argv[]) {
 		pos++;
 		
 		if (output != EOF) {
-			printf("%c", output);
+			if (printf("%c", output) < 0) {
+				fprintf(stderr, "%s: %s\n", "printf()", strerror(errno));
+				closeSegment(shm_sem);
+				return -1;
+			}
 		}
 		
-		/* if pos == shared memory size, start at 0 again */
-		if (pos == shm_sem.shm_size) {
+		/* if pos >= shared memory size, start at 0 again */
+		if (pos >= shm_sem.shm_size) {
 			pos = 0;
 		}
 		
 		/* increment write semaphore to tell sender that segment is read and can be overwritten */
 		if (V(shm_sem.sem_w) != 0) {
-			perror("V(shm_sem.sem_w)");
+			fprintf(stderr, "%s: %s\n", "V(shm_sem.sem_w)", strerror(errno));
 			closeSegment(shm_sem);
-			break;
+			return -1;
 		}
 	} while (output != EOF);
-
-	closeSegment(shm_sem);
 	
+	closeSegment(shm_sem);
+
 	return 0;
 }
