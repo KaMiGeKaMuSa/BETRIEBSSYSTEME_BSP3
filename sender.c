@@ -31,44 +31,46 @@
 int main(int argc, char * argv[]) {
 	data_collect shm_sem;
 	int shm_size = 0, pos = 0;
-	char input;
+	int input = -1;
 	
 	/*  get size as parameter */
-    shm_size = parseParameter(argc, argv);
+    if ((shm_size = parseParameter(argc, argv)) == -1) {
+		return -1;
+	}
     
 	/*  create segment/semaphore and return collection or when already created only return collection */
-	shm_sem = createSegment(shm_size);
-    
-    
-	// 3) while (!= EOF) auf Shared Memory schreiben
-	//		aufpassen das Schreibindex hinter Leseindex bleibt
+	shm_sem = createSegment(shm_size, WRITE_MODE);
+	if (shm_sem.segment == NULL) return -1;
+	
 	do {
-		/* Decrement write semaphore, because we write onto a free segment, if >0 all ok else block application */
-		if (P(shm_sem.sem_w) != 0) {
-			if (errno == EINTR) {
-				/* syscall interrupted by signal, try again */
-				continue;
-			}
-			perror("P(shm_sem.sem_w)");
-			closeSegment(shm_sem);
-			break;
-		}
-	  
-		/* get character from stdin and write into shared memory */
+		/* get character from stdin */
 		input = fgetc(stdin);
+		
+		/* Decrement write semaphore, because we write onto a free segment, if >0 all ok else block application */
+		while (P(shm_sem.sem_w) == -1) {
+			if (errno != EINTR) {
+				fprintf(stderr, "%s: %s\n", "P(shm_sem.sem_w)", strerror(errno));
+				closeSegment(shm_sem);
+				return -1;
+			}
+			errno = 0;
+		}
+		
+		/* and write into shared memory */
 		shm_sem.segment[pos] = input;
 		pos++;
 		
-		/* if pos == shared memory size, start at 0 again */
-		if (pos == shm_sem.shm_size) {
+		/* if pos >= shared memory size, start at 0 again */
+		if (pos >= shm_sem.shm_size) {
 			pos = 0;
 		}
 		
+		errno = 0;
 		/* increment read semaphore to tell receiver that something is ready to read */
-		if (V(shm_sem.sem_r) != 0) {
-			perror("V(shm_sem.sem_r)");
+		if (V(shm_sem.sem_r) == -1) {
+			fprintf(stderr, "%s: %s\n", "V(shm_sem.sem_r)", strerror(errno));
 			closeSegment(shm_sem);
-			break;
+			return -1;
 		}
 	} while (input != EOF);
 	
