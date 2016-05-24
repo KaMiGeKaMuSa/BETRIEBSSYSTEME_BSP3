@@ -28,10 +28,9 @@
  /*
  * ------------------------------------------------------------- main --
  */
-int main(int argc, const char * argv[]) {
+int main(int argc, char * argv[]) {
 	data_collect shm_sem;
 	int shm_size = 0;
-	int sendData;
 	int pos = 0;
 	char output;
 	

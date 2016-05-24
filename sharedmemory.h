@@ -61,7 +61,7 @@ typedef struct {
  */
 data_collect createSegment(int shm_size, int shm_mode);
 int closeSegment(data_collect shm_sem);
-int parseParameter(int argc, char **argv);
+int parseParameter(int argc, char * argv[]);
 
 
 #endif /* _SHAREDMEMORY_H_ */

@@ -1,26 +1,32 @@
-## @author Karin Kalman
-## @author Michael Mueller
-## @author Gerhard Sabeditsch
+##
+## @file Makefile
+## sharedmemory
+## Beispiel 3
+##
+## @author Karin Kalman <karin.kalman@technikum-wien.at>
+## @author Michael Mueller <michael.mueller@technikum-wien.at>
+## @author Gerhard Sabeditsch <gerhard.sabeditsch@technikum-wien.at>
+## @date 2016/04/17
+##
+## @version $Revision: 2.1 $
+##
+##
+## Last Modified: $Author: Gerhard $
+##
+
 ##
 ## ------------------------------------------------------------- variables --
 ##
 
 CC=gcc
-##CFLAGS=-DDEBUG -Wall -Wextra -Wstrict-prototypes -fno-common -g -O3 -std=gnu11
-
-OBJECTS=sender empfaenger
-
-EXCLUDE_PATTERN=footrulewidth
-
-CFLAGS=-DDEBUG -Wall -pedantic -Werror -Wextra -Wstrict-prototypes -fno-common -g -O3 -std=gnu11
-
-RM=rm
-CP=cp
+CFLAGS=-DDEBUG -Wall -Werror -Wextra -Wstrict-prototypes -pedantic -fno-common -g -O3
 CD=cd
+CP=cp
 MV=mv
 GREP=grep
 DOXYGEN=doxygen
 
+EXCLUDE_PATTERN=footrulewidth
 
 ##
 ## ----------------------------------------------------------------- rules --
@@ -33,25 +39,22 @@ DOXYGEN=doxygen
 ## --------------------------------------------------------------- targets --
 ##
 
-.PHONY: all
 all: sender empfaenger
 
-mypopen: $(OBJECTS)
-	$(CC) $(CFLAGS) -o $@ $^
-##	$(RM) *.o
- 
-.PHONY: clean
+sender: sender.o sharedfunctions.o
+	$(CC) $(OPTFLAGS) sender.o sharedfunctions.o -lsem182 -o sender
+
+empfaenger: empfaenger.o sharedfunctions.o
+	$(CC) $(OPTFLAGS) empfaenger.o sharedfunctions.o -lsem182 -o empfaenger
+
 clean:
-	$(RM) *.o
+	$(RM) *.o *~  sender empfaenger
 
-
-.PHONY: distclean
 distclean: clean
-	$(RM) -rf doc
+	$(RM) -r doc
 
 doc: html pdf
 
-.PHONY: html
 html:
 	$(DOXYGEN) doxygen.dcf
 
@@ -65,12 +68,3 @@ pdf: html
 	$(RM) *.pdf *.html *.tex *.aux *.sty *.log *.eps *.out *.ind *.idx \
 	      *.ilg *.toc *.tps Makefile && \
 	$(MV) refman.save refman.pdf
-
-
-##
-## ---------------------------------------------------------- dependencies --
-##
-
-##
-## =================================================================== eof ==
-##

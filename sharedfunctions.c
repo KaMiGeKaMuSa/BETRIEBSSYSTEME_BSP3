@@ -52,7 +52,7 @@ data_collect createSegment(int shm_size, int shm_mode) {
     }
 
     /* attach to the segment to get a pointer to it: */
-	if (ret_object.use_mode = READ_MODE) shm_flag = SHM_RDONLY;
+	if (ret_object.use_mode == READ_MODE) shm_flag = SHM_RDONLY;
 	
     ;
     if ((ret_object.segment = shmat(ret_object.shmid, NULL, shm_flag)) == (char *)(-1)) {
@@ -102,7 +102,7 @@ data_collect createSegment(int shm_size, int shm_mode) {
  * -------------------------------------------------------------- close segment - function --
  */
 int closeSegment(data_collect shm_sem) {
-    int returnvalue;
+    int returnvalue = 0;
     
     /* clean up semaphores */
 	if (shm_sem.sem_w != -1)
@@ -137,7 +137,7 @@ int closeSegment(data_collect shm_sem) {
 	if (shm_sem.shmid != -1)
 	{
 		if ((returnvalue = shmctl(shm_sem.shmid, IPC_RMID, NULL)) == -1) {
-			fprintf(stderr, "%s: %s %s\n", "shmctl()", strerror(errno));
+			fprintf(stderr, "%s: %s\n", "shmctl()", strerror(errno));
 			shm_sem.shmid = -1;
 			return returnvalue;
 		} 
@@ -150,24 +150,40 @@ int closeSegment(data_collect shm_sem) {
 /**
  * -------------------------------------------------------------- getopt - function --
  */
-int parseParameter(int argc, char *argv[]) {
-	int ret = 0, fail = 0, c;
-	
-	while ((c = getopt(argc, argv, "m:")) != EOF) {
-        switch (c) {
-        case 'm':
-            ret = atoi(optarg);
-            break;
-        default:
-            fail=1;
-            break;
-        }
-    }
-	
-	if (fail) {
-        fprintf(stderr,"usage: %s [-m size] ...\n", argv[0]);
-        return -1;
-    }
-	
-	return ret;
+int parseParameter(int argc, char * argv[]) {
+	int option;
+	long int size = -1;
+	char* phelper = NULL;
+
+	errno = 0;
+
+	/* check parameter list for valid options */
+	while ((option = getopt(argc, argv, "+m:")) != -1)
+	{
+		switch (option)
+		{
+			case 'm':
+				/* convert buffer size string to numeric  */
+				size = strtol(optarg, &phelper, 10);
+				if (errno != 0)
+				{
+					fprintf(stderr, "%s: %s\n", "could not convert argument", strerror(errno));
+					return -1;
+				}
+				break;
+				
+			default:
+				fprintf(stderr, "%s: -%c.\n", "invalid option", option);
+				return -1;
+		}
+	}
+
+	/* check for extra parameters */
+	if (optind < argc)
+	{
+		fprintf(stderr, "%s:\n", "illegal number of options");
+		return -1;
+	}
+
+	return size;
 }
