@@ -44,18 +44,22 @@
 #define SEM_R_KEY getuid() * 1000 + 1
 #define SEM_W_KEY getuid() * 1000 + 2
 
+#define READ_MODE 0
+#define WRITE_MODE 1
+
 typedef struct {
 	char *segment;
     int shmid;
     int sem_r;
 	int sem_w;
 	int shm_size;
+	int use_mode;
 } data_collect;
 
 /*
  * --------------------------------------------------- function prototypes --
  */
-data_collect createSegment(int shm_size);
+data_collect createSegment(int shm_size, int shm_mode);
 int closeSegment(data_collect shm_sem);
 int parseParameter(int argc, char **argv);
 
