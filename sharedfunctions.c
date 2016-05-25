@@ -52,7 +52,7 @@ data_collect createSegment(int shm_size, int shm_mode) {
     }
 
     /* attach to the segment to get a pointer to it: */
-	if (ret_object.use_mode == READ_MODE) shm_flag = SHM_RDONLY;
+    if (ret_object.use_mode == READ_MODE) shm_flag = SHM_RDONLY;
 	
     ;
     if ((ret_object.segment = shmat(ret_object.shmid, NULL, shm_flag)) == (char *)(-1)) {
@@ -63,8 +63,7 @@ data_collect createSegment(int shm_size, int shm_mode) {
 	
 	/* read-semaphore don't exist, so initialize: */
 	if ((ret_object.sem_r = seminit(SEM_R_KEY, 0600, ret_object.shm_size)) == -1) {
-		if (errno == EEXIST)
-		{
+		if (errno == EEXIST) {
 			/* already created by other process */
 			if ((ret_object.sem_r = semgrab(SEM_R_KEY)) == -1) {
 				fprintf(stderr,"%s: %s\n", "semgrab(sem_r)", strerror(errno));
@@ -80,8 +79,7 @@ data_collect createSegment(int shm_size, int shm_mode) {
 
 	/* write-semaphore don't exist, so initialize: */
 	if ((ret_object.sem_w = seminit(SEM_W_KEY, 0600, ret_object.shm_size)) == -1) {
-		if (errno == EEXIST)
-		{
+		if (errno == EEXIST) {
 			/* already created by other process */
 			if ((ret_object.sem_w = semgrab(SEM_W_KEY)) == -1) {
 				fprintf(stderr,"%s: %s\n", "semgrab(sem_w)", strerror(errno));
@@ -105,8 +103,7 @@ int closeSegment(data_collect shm_sem) {
     int returnvalue = 0;
     
     /* clean up semaphores */
-	if (shm_sem.sem_w != -1)
-	{
+	if (shm_sem.sem_w != -1) {
 		if ((returnvalue = semrm(shm_sem.sem_w)) == -1) {
 			fprintf(stderr, "%s: %s\n", "semrm(shm_sem.sem_w)", strerror(errno));
 			shm_sem.sem_w = -1;
@@ -114,8 +111,7 @@ int closeSegment(data_collect shm_sem) {
 		}
 	}
 	
-	if (shm_sem.sem_r != -1)
-	{
+	if (shm_sem.sem_r != -1) {
 		if ((returnvalue = semrm(shm_sem.sem_r)) == -1) {
 			fprintf(stderr, "%s: %s\n", "semrm(shm_sem.sem_r)", strerror(errno));
 			shm_sem.sem_r = -1;
@@ -134,8 +130,7 @@ int closeSegment(data_collect shm_sem) {
 	}
 	
     /*  if shared memory segment exists mark as removable */
-	if (shm_sem.shmid != -1)
-	{
+	if (shm_sem.shmid != -1) {
 		if ((returnvalue = shmctl(shm_sem.shmid, IPC_RMID, NULL)) == -1) {
 			fprintf(stderr, "%s: %s\n", "shmctl()", strerror(errno));
 			shm_sem.shmid = -1;
@@ -153,20 +148,17 @@ int closeSegment(data_collect shm_sem) {
 int parseParameter(int argc, char * argv[]) {
 	int option;
 	long int size = -1;
-	char* phelper = NULL;
+	char* prest = NULL;
 
 	errno = 0;
 
 	/* check parameter list for valid options */
-	while ((option = getopt(argc, argv, "+m:")) != -1)
-	{
-		switch (option)
-		{
+	while ((option = getopt(argc, argv, "+m:")) != -1) {
+		switch (option) {
 			case 'm':
 				/* convert buffer size string to numeric  */
-				size = strtol(optarg, &phelper, 10);
-				if (errno != 0)
-				{
+				size = strtol(optarg, &prest, 10);
+				if (errno != 0 || *prest != '\0' || size <= 0) {
 					fprintf(stderr, "%s: %s\n", "could not convert argument", strerror(errno));
 					return -1;
 				}
@@ -179,8 +171,7 @@ int parseParameter(int argc, char * argv[]) {
 	}
 
 	/* check for extra parameters */
-	if (optind < argc)
-	{
+	if (optind < argc) {
 		fprintf(stderr, "%s:\n", "illegal number of options");
 		return -1;
 	}
