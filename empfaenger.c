@@ -32,7 +32,7 @@ int main(int argc, char * argv[]) {
 	data_collect shm_sem;
 	int shm_size = 0;
 	int pos = 0;
-	char output;
+	int output = -1;
 	
 	/*  get size as parameter */
 	if ((shm_size = parseParameter(argc, argv)) == -1) {
@@ -59,7 +59,7 @@ int main(int argc, char * argv[]) {
 		pos++;
 		
 		if (output != EOF) {
-			if (printf("%c", output) < 0) {
+			if (fputc(output, stdout) == EOF) {
 				fprintf(stderr, "%s: %s\n", "printf()", strerror(errno));
 				closeSegment(shm_sem);
 				return -1;
