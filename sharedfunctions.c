@@ -62,7 +62,7 @@ data_collect createSegment(int shm_size, int shm_mode) {
     }
 	
 	/* read-semaphore don't exist, so initialize: */
-	if ((ret_object.sem_r = seminit(SEM_R_KEY, 0600, ret_object.shm_size)) == -1) {
+	if ((ret_object.sem_r = seminit(SEM_R_KEY, 0600, 0)) == -1) {
 		if (errno == EEXIST) {
 			/* already created by other process */
 			if ((ret_object.sem_r = semgrab(SEM_R_KEY)) == -1) {
