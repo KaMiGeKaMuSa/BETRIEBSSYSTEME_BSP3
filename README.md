@@ -18,19 +18,19 @@ Test 03: successful
 
 Test 04: successful
 
-Test 05: FAIL - files unterschiedlich
+Test 05: successful
 
-Test 06: successful aber am schluss steht "There is something to improve"(??)
+Test 06: successful
 
-Test 07: FAIL - files unterschiedlich
+Test 07: successful
 
-Test 08: FAIL - files unterschiedlich
+Test 08: successful
 
-Test 09: FAIL - files unterschiedlich
+Test 09: successful
 
 Test 10: FAIL - exit status 255  bei sender
 
-Test 11: FAIL - files unterschiedlich
+Test 11: FAIL - exit status 255  bei sender
 
 Test 12: FAIL - exit status 255  bei sender
 
