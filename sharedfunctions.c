@@ -176,5 +176,5 @@ int parseParameter(int argc, char * argv[]) {
 		return -1;
 	}
 
-	return size;
+	return (int) size;
 }

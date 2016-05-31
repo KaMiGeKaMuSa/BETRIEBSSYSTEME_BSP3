@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		A36E641A1CFDE5C500FC29DE /* sem182.c in Sources */ = {isa = PBXBuildFile; fileRef = A36E64191CFDE5C500FC29DE /* sem182.c */; };
 		A3F4746B1CD2A69300545C24 /* sender.c in Sources */ = {isa = PBXBuildFile; fileRef = A3F474681CD2A69300545C24 /* sender.c */; };
 		A3F4746C1CD2A69300545C24 /* sharedfunctions.c in Sources */ = {isa = PBXBuildFile; fileRef = A3F474691CD2A69300545C24 /* sharedfunctions.c */; };
 /* End PBXBuildFile section */
@@ -24,6 +25,9 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		A36E64171CFDE4A100FC29DE /* msem182.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = msem182.h; path = ../../sem182/msem182.h; sourceTree = "<group>"; };
+		A36E64181CFDE4AE00FC29DE /* sem182.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = sem182.h; path = ../../sem182/sem182.h; sourceTree = "<group>"; };
+		A36E64191CFDE5C500FC29DE /* sem182.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = sem182.c; path = ../../sem182/sem182.c; sourceTree = "<group>"; };
 		A3F4745E1CD2A66500545C24 /* sender */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = sender; sourceTree = BUILT_PRODUCTS_DIR; };
 		A3F474681CD2A69300545C24 /* sender.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = sender.c; path = ../../sender.c; sourceTree = "<group>"; };
 		A3F474691CD2A69300545C24 /* sharedfunctions.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = sharedfunctions.c; path = ../../sharedfunctions.c; sourceTree = "<group>"; };
@@ -60,6 +64,9 @@
 		A3F474601CD2A66500545C24 /* sender */ = {
 			isa = PBXGroup;
 			children = (
+				A36E64191CFDE5C500FC29DE /* sem182.c */,
+				A36E64181CFDE4AE00FC29DE /* sem182.h */,
+				A36E64171CFDE4A100FC29DE /* msem182.h */,
 				A3F474681CD2A69300545C24 /* sender.c */,
 				A3F474691CD2A69300545C24 /* sharedfunctions.c */,
 				A3F4746A1CD2A69300545C24 /* sharedmemory.h */,
@@ -125,6 +132,7 @@
 			files = (
 				A3F4746C1CD2A69300545C24 /* sharedfunctions.c in Sources */,
 				A3F4746B1CD2A69300545C24 /* sender.c in Sources */,
+				A36E641A1CFDE5C500FC29DE /* sem182.c in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -245,6 +253,7 @@
 				A3F474671CD2A66500545C24 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
 	};

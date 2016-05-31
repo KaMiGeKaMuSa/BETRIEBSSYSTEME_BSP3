@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		A36E641D1CFDE64300FC29DE /* sem182.c in Sources */ = {isa = PBXBuildFile; fileRef = A36E641C1CFDE64300FC29DE /* sem182.c */; };
 		A3F474831CD2A6E100545C24 /* empfaenger.c in Sources */ = {isa = PBXBuildFile; fileRef = A3F474801CD2A6E100545C24 /* empfaenger.c */; };
 		A3F474841CD2A6E100545C24 /* sharedfunctions.c in Sources */ = {isa = PBXBuildFile; fileRef = A3F474811CD2A6E100545C24 /* sharedfunctions.c */; };
 /* End PBXBuildFile section */
@@ -24,6 +25,8 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		A36E641B1CFDE62D00FC29DE /* sem182.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = sem182.h; path = ../../sem182/sem182.h; sourceTree = "<group>"; };
+		A36E641C1CFDE64300FC29DE /* sem182.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = sem182.c; path = ../../sem182/sem182.c; sourceTree = "<group>"; };
 		A3F474761CD2A6BE00545C24 /* empfaenger */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = empfaenger; sourceTree = BUILT_PRODUCTS_DIR; };
 		A3F474801CD2A6E100545C24 /* empfaenger.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = empfaenger.c; path = ../../empfaenger.c; sourceTree = "<group>"; };
 		A3F474811CD2A6E100545C24 /* sharedfunctions.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = sharedfunctions.c; path = ../../sharedfunctions.c; sourceTree = "<group>"; };
@@ -60,6 +63,8 @@
 		A3F474781CD2A6BE00545C24 /* empfaenger */ = {
 			isa = PBXGroup;
 			children = (
+				A36E641C1CFDE64300FC29DE /* sem182.c */,
+				A36E641B1CFDE62D00FC29DE /* sem182.h */,
 				A3F474801CD2A6E100545C24 /* empfaenger.c */,
 				A3F474811CD2A6E100545C24 /* sharedfunctions.c */,
 				A3F474821CD2A6E100545C24 /* sharedmemory.h */,
@@ -125,6 +130,7 @@
 			files = (
 				A3F474841CD2A6E100545C24 /* sharedfunctions.c in Sources */,
 				A3F474831CD2A6E100545C24 /* empfaenger.c in Sources */,
+				A36E641D1CFDE64300FC29DE /* sem182.c in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -245,6 +251,7 @@
 				A3F4747F1CD2A6BE00545C24 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
 	};

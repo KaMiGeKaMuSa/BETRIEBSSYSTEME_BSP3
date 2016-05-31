@@ -36,7 +36,7 @@ int main(int argc, char * argv[]) {
 	
 	/*  get size as parameter */
 	if ((shm_size = parseParameter(argc, argv)) == -1) {
-		fprintf(stderr, "Usage: sender -m <ringbuffer size>\n");
+		fprintf(stderr, "Usage: empfaenger -m <ringbuffer size>\n");
 		return -1;
 	}
 	
