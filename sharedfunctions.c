@@ -25,6 +25,7 @@
  * -------------------------------------------------------------- global static variables --
  */
  
+ 
 /**
  * -------------------------------------------------------------- create segment - function --
 */
@@ -35,7 +36,7 @@
 data_collect createSegment(int shm_size, int shm_mode) {
     data_collect ret_object;
 	int shm_flag = 0;
-	
+
 	/* default values */
 	ret_object.shm_size = shm_size;
 	ret_object.use_mode = shm_mode;
@@ -43,6 +44,12 @@ data_collect createSegment(int shm_size, int shm_mode) {
 	ret_object.sem_w = -1;
 	ret_object.shmid = -1;
 	ret_object.segment = NULL;
+	
+	/* ignore these signals: */
+	signal(SIGINT, SIG_IGN);
+	signal(SIGTERM, SIG_IGN);
+	signal(SIGHUP, SIG_IGN);
+	signal(SIGQUIT, SIG_IGN);
 	
 	/*  create segment: */
 	if ((ret_object.shmid = shmget(SHM_KEY, sizeof(int) * ret_object.shm_size, 0660 | IPC_CREAT)) == -1) {
