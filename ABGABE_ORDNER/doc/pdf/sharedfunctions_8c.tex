@@ -1,0 +1,127 @@
+\hypertarget{sharedfunctions_8c}{
+\section{sharedfunctions.c File Reference}
+\label{sharedfunctions_8c}\index{sharedfunctions.c@{sharedfunctions.c}}
+}
+{\ttfamily \#include \char`\"{}sharedmemory.h\char`\"{}}\par
+Include dependency graph for sharedfunctions.c:\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=369pt]{sharedfunctions_8c__incl}
+\end{center}
+\end{figure}
+\subsection*{Functions}
+\begin{DoxyCompactItemize}
+\item 
+\hyperlink{structdata__collect}{data\_\-collect} \hyperlink{sharedfunctions_8c_a42c35f28b7b42451353f0fa2c273713a}{createSegment} (int shm\_\-size, int shm\_\-mode)
+\begin{DoxyCompactList}\small\item\em createSegment \item\end{DoxyCompactList}\item 
+int \hyperlink{sharedfunctions_8c_afc72a5149e76690fd2584f44298a0e35}{closeSegment} (\hyperlink{structdata__collect}{data\_\-collect} shm\_\-sem)
+\begin{DoxyCompactList}\small\item\em closeSegment \item\end{DoxyCompactList}\item 
+int \hyperlink{sharedfunctions_8c_a06d8598f2e23fda3712b03936627b41b}{parseParameter} (int argc, char $\ast$argv\mbox{[}$\,$\mbox{]})
+\begin{DoxyCompactList}\small\item\em parseParameter \item\end{DoxyCompactList}\end{DoxyCompactItemize}
+
+
+\subsection{Detailed Description}
+sharedmemory Beispiel 3
+
+\begin{DoxyAuthor}{Author}
+Karin Kalman $<$\href{mailto:karin.kalman@technikum-wien.at}{\tt karin.kalman@technikum-\/wien.at}$>$ 
+
+Michael Mueller $<$\href{mailto:michael.mueller@technikum-wien.at}{\tt michael.mueller@technikum-\/wien.at}$>$ 
+
+Gerhard Sabeditsch $<$\href{mailto:gerhard.sabeditsch@technikum-wien.at}{\tt gerhard.sabeditsch@technikum-\/wien.at}$>$ 
+\end{DoxyAuthor}
+\begin{DoxyDate}{Date}
+2016/05/28
+\end{DoxyDate}
+\begin{DoxyVersion}{Version}
+
+\end{DoxyVersion}
+Revision}
+1 
+
+URL: \$HeadURL\$
+
+Last Modified: Author}
+Gerhard 
+
+Definition in file \hyperlink{sharedfunctions_8c_source}{sharedfunctions.c}.
+
+\subsection{Function Documentation}
+\hypertarget{sharedfunctions_8c_afc72a5149e76690fd2584f44298a0e35}{
+\index{sharedfunctions.c@{sharedfunctions.c}!closeSegment@{closeSegment}}
+\index{closeSegment@{closeSegment}!sharedfunctions.c@{sharedfunctions.c}}
+\subsubsection[{closeSegment}]{\setlength{\rightskip}{0pt plus 5cm}int closeSegment ({\bf data\_\-collect} {\em shm\_\-sem})}}
+\label{sharedfunctions_8c_afc72a5149e76690fd2584f44298a0e35}
+closeSegment
+
+cleans up semaphores, detatches shared memory segment and mark as removeable
+
+
+\begin{DoxyParams}{Parameters}
+\item[{\em shm\_\-sem}]\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+$>$ -\/1 or -\/1
+\end{DoxyReturn}
+
+\begin{DoxyRetVals}{Return values}
+\item[{\em $>$}]-\/1 ==$>$ Everything OK \item[{\em -\/1}]==$>$ Somthing goes wrong \end{DoxyRetVals}
+
+
+Definition at line 140 of file sharedfunctions.c.
+
+References data\_\-collect::segment, data\_\-collect::sem\_\-r, data\_\-collect::sem\_\-w, and data\_\-collect::shmid.
+
+Referenced by createSegment(), and main().\hypertarget{sharedfunctions_8c_a42c35f28b7b42451353f0fa2c273713a}{
+\index{sharedfunctions.c@{sharedfunctions.c}!createSegment@{createSegment}}
+\index{createSegment@{createSegment}!sharedfunctions.c@{sharedfunctions.c}}
+\subsubsection[{createSegment}]{\setlength{\rightskip}{0pt plus 5cm}{\bf data\_\-collect} createSegment (int {\em shm\_\-size}, \/  int {\em shm\_\-mode})}}
+\label{sharedfunctions_8c_a42c35f28b7b42451353f0fa2c273713a}
+createSegment
+
+creates a a ring buffer and there semaphores
+
+
+\begin{DoxyParams}{Parameters}
+\item[{\em shm\_\-size}]size of the ring buffer \item[{\em shm\_\-mode}](read or write)\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+NULL or ! NULL
+\end{DoxyReturn}
+
+\begin{DoxyRetVals}{Return values}
+\item[{\em !}]NULL ==$>$ Everything OK \item[{\em NULL}]==$>$ Somthing goes wrong \end{DoxyRetVals}
+
+
+Definition at line 50 of file sharedfunctions.c.
+
+References closeSegment(), READ\_\-MODE, data\_\-collect::segment, data\_\-collect::sem\_\-r, SEM\_\-R\_\-KEY, data\_\-collect::sem\_\-w, SEM\_\-W\_\-KEY, SHM\_\-KEY, data\_\-collect::shm\_\-size, data\_\-collect::shmid, and data\_\-collect::use\_\-mode.
+
+Referenced by main().
+
+Here is the call graph for this function:\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=122pt]{sharedfunctions_8c_a42c35f28b7b42451353f0fa2c273713a_cgraph}
+\end{center}
+\end{figure}
+\hypertarget{sharedfunctions_8c_a06d8598f2e23fda3712b03936627b41b}{
+\index{sharedfunctions.c@{sharedfunctions.c}!parseParameter@{parseParameter}}
+\index{parseParameter@{parseParameter}!sharedfunctions.c@{sharedfunctions.c}}
+\subsubsection[{parseParameter}]{\setlength{\rightskip}{0pt plus 5cm}int parseParameter (int {\em argc}, \/  char $\ast$ {\em argv}\mbox{[}$\,$\mbox{]})}}
+\label{sharedfunctions_8c_a06d8598f2e23fda3712b03936627b41b}
+parseParameter
+
+get the size of the ringbuffer out of the given parameters
+
+\begin{DoxyReturn}{Returns}
+$>$0 or -\/1
+\end{DoxyReturn}
+
+\begin{DoxyRetVals}{Return values}
+\item[{\em $>$0}]==$>$ Everything OK \item[{\em -\/1}]==$>$ Somthing goes wrong \end{DoxyRetVals}
+
+
+Definition at line 201 of file sharedfunctions.c.
+
+Referenced by main().
