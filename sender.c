@@ -14,20 +14,36 @@
  * URL: $HeadURL$
  *
  * Last Modified: $Author: Gerhard $
- */
+ **/
 
-/**
+/*
  * -------------------------------------------------------------- includes --
  */
 #include "sharedmemory.h"
 
-/**
+/*
  * -------------------------------------------------------------- global static variables --
  */
 
- /*
- * ------------------------------------------------------------- main --
- */
+/**
+ *
+ * \brief sender
+ *
+ * Sender Programm
+ *
+ * A sender transmitts data to a shared memory
+ *
+ *
+ * \param argc the number of arguments
+ * \param argv the arguments itselves (including the program name in argv[0])
+ *
+ * \return 0 or -1
+ *
+ * \retval 0 (Everything OK)
+ * \retval -1 (Something goes wrong)
+ *
+ **/
+
 int main(int argc, char * argv[]) {
 	data_collect shm_sem;
 	int shm_size = 0, pos = 0;

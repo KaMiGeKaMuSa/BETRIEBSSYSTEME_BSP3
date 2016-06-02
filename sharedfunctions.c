@@ -6,7 +6,7 @@
  * @author Karin Kalman <karin.kalman@technikum-wien.at>
  * @author Michael Mueller <michael.mueller@technikum-wien.at>
  * @author Gerhard Sabeditsch <gerhard.sabeditsch@technikum-wien.at>
- * @date 2016/04/17
+ * @date 2016/05/28
  *
  * @version $Revision: 1 $
  *
@@ -14,25 +14,39 @@
  * URL: $HeadURL$
  *
  * Last Modified: $Author: Gerhard $
- */
+ **/
 
-/**
+/*
  * -------------------------------------------------------------- includes --
  */
 #include "sharedmemory.h"
 
-/**
+/*
  * -------------------------------------------------------------- global static variables --
  */
  
  
-/**
- * -------------------------------------------------------------- create segment - function --
-*/
-
 /*
- *
+ * -------------------------------------------------------------- create segment - function --
  */
+
+/**
+ *
+ * \brief createSegment
+ *
+ * createSegment
+ *
+ * creates a a ring buffer and there semaphores
+ *
+ * \param shm_size  size of the ring buffer
+ * \param shm_mode  (read or write)
+ *
+ * \return NULL or ! NULL
+ *
+ * \retval ! NULL ==> Everything OK
+ * \retval NULL  ==> Somthing goes wrong
+ **/
+
 data_collect createSegment(int shm_size, int shm_mode) {
     data_collect ret_object;
 	int shm_flag = 0;
@@ -61,7 +75,7 @@ data_collect createSegment(int shm_size, int shm_mode) {
     /* attach to the segment to get a pointer to it: */
     if (ret_object.use_mode == READ_MODE) shm_flag = SHM_RDONLY;
 	
-    ;
+    
     if ((ret_object.segment = shmat(ret_object.shmid, NULL, shm_flag)) == (char *)(-1)) {
 		fprintf(stderr,"%s: %s\n", "shmat()", strerror(errno));
 		closeSegment(ret_object);
@@ -103,9 +117,26 @@ data_collect createSegment(int shm_size, int shm_mode) {
 	return ret_object;
 }
     
-/**
+/*
  * -------------------------------------------------------------- close segment - function --
  */
+
+/**
+ *
+ * \brief closeSegment
+ *
+ * closeSegment
+ *
+ * cleans up semaphores, detatches shared memory segment and mark as removeable
+ *
+ * \param shm_sem
+ *
+ * \return > -1 or -1
+ *
+ * \retval > -1 ==> Everything OK
+ * \retval -1  ==> Somthing goes wrong
+ **/
+
 int closeSegment(data_collect shm_sem) {
     int returnvalue = 0;
     
@@ -149,9 +180,24 @@ int closeSegment(data_collect shm_sem) {
     return returnvalue;
 }
 
-/**
- * -------------------------------------------------------------- getopt - function --
+/*
+ * -------------------------------------------------------------- parseParameter - function --
  */
+
+/**
+ *
+ * \brief parseParameter
+ *
+ * parseParameter
+ *
+ * get the size of the ringbuffer out of the given parameters
+ *
+ * \return >0 or -1
+ *
+ * \retval >0 ==> Everything OK
+ * \retval -1 ==> Somthing goes wrong
+ **/
+
 int parseParameter(int argc, char * argv[]) {
 	int option;
 	long int size = -1;

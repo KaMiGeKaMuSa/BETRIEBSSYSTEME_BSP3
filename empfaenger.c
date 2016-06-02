@@ -6,7 +6,7 @@
  * @author Karin Kalman <karin.kalman@technikum-wien.at>
  * @author Michael Mueller <michael.mueller@technikum-wien.at>
  * @author Gerhard Sabeditsch <gerhard.sabeditsch@technikum-wien.at>
- * @date 2016/04/17
+ * @date 2016/05/28
  *
  * @version $Revision: 1 $
  *
@@ -14,20 +14,36 @@
  * URL: $HeadURL$
  *
  * Last Modified: $Author: Gerhard $
- */
+ **/
 
-/**
+/*
  * -------------------------------------------------------------- includes --
  */
 #include "sharedmemory.h"
 
-/**
+/*
  * -------------------------------------------------------------- global static variables --
  */
 
- /*
- * ------------------------------------------------------------- main --
- */
+ /**
+  *
+  * \brief empfaenger
+  *
+  * Empfaenger Programm
+  *
+  * A empfaenger receives data from a shared memory
+  *
+  *
+  * \param argc the number of arguments
+  * \param argv the arguments itselves (including the program name in argv[0])
+  *
+  * \return 0 or -1
+  *
+  * \retval 0 (Everything OK)
+  * \retval -1 (Something goes wrong)
+  *
+  **/
+
 int main(int argc, char * argv[]) {
 	data_collect shm_sem;
 	int shm_size = 0;
