@@ -1,0 +1,15 @@
+Code Inspection:
+
+Positiv: 
+	+ alle Tests, die von Professoren zur Verfügung gestellt wurden, bestanden
+	+ gut strukturierter Code
+	+ lesbar und sehr verständlich
+	+ Kommentare sind kurz, bündig und hilfreich
+	+ gute Fehlerbehandlung
+	
+Negativ:
+	- Fast identer Code sollte vermieden werden (z.B. mit Hilfsfunktion bzw. wie hier mit einer eigenen C-Datei)
+	- Variablen gehören am Anfang der Funktion deklariert, initialisiert
+	- Ein Kommentar wurde nicht in C Format geschrieben sondern in C++ Format und einsprachig bleiben
+	
+	
