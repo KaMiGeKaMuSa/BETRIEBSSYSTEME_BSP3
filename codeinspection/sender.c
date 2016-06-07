@@ -64,7 +64,6 @@ int main(int argc, char *argv[])
 	int opt;
 	int parameter = 0;
 	char *endptr;
-	/* ### FB: Kein Type angegeben und unused variable -> sollte gelöscht werden */
 	opterr = 0;
 
 	/* ist ausschalggebend dafür ob ein Fehler passiert is oder nicht */
