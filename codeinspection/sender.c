@@ -262,6 +262,7 @@ void usage(void)
  * @retval 0 success
  *  	   -1 error
  */
+  /* ### FB: Funktion wird nirgends verwendet? */
 int print(const char * string)
 {
 	errno = 0;
@@ -322,7 +323,7 @@ int removeSharedMemory(int *shmptr, int shmid)
 int removeSemaphores(int semid0, int semid1)
 {
 	int retval = 0;
-	/* ### FB: Kommentar im falschen Format: */
+	/* ### FB: Kommentar im falschen Format und nicht verständlich: */
 	if(semid0 != -1 && semrm(semid0) == -1 ) // nur einer von beiden
 	{
 		retval = -1;
