@@ -10,6 +10,5 @@ Positiv:
 Negativ:
 	- Fast identer Code sollte vermieden werden (z.B. mit Hilfsfunktion bzw. wie hier mit einer eigenen C-Datei)
 	- Variablen gehören am Anfang der Funktion deklariert, initialisiert
+	- errno wird kaum verwendet um auf der Konsole einen aussagekräftigen Fehler auszugeben (wird mit strerror(errno) gemacht)
 	- Ein Kommentar wurde nicht in C Format geschrieben sondern in C++ Format und einsprachig bleiben
-	
-	
